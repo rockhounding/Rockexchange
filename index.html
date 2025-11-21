@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock Hounding for Begginners - Rock Exchange</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #151a22;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #bbbbbb;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #202837;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      margin-bottom: 18px;
+    }
+
+    .code-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+    }
+
+    .code-row label {
+      font-size: 14px;
+    }
+
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #0f1420;
+      color: #f5f5f5;
+      box-shadow: inset 0 0 0 1px #333;
+      font-size: 15px;
+      text-align: center;
+      width: 160px;
+      letter-spacing: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      resize: vertical;
+      font-family: monospace;
+      font-size: 13px;
+      background: #0f1420;
+      color: #f5f5f5;
+      box-shadow: inset 0 0 0 1px #333;
+    }
+
+    button {
+      background: #4caf50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 8px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    button:hover {
+      background: #5ec660;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #3f51b5;
+    }
+
+    .status {
+      margin-top: 10px;
+      min-height: 18px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .status.error {
+      color: #ff8a80;
+    }
+
+    .status.success {
+      color: #9cff9c;
+    }
+
+    .result-card {
+      margin-top: 14px;
+      background: #181f2c;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: inset 0 0 0 1px #333;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .result-card strong {
+      color: #ffd54f;
+    }
+
+    .small-note {
+      font-size: 11px;
+      color: #bbb;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .admin-header h2 {
+      border-bottom: none;
+      margin: 0;
+      padding: 0;
+      font-size: 18px;
+    }
+
+    .admin-small-note {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 6px;
+      text-align: left;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .participants-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .participant {
+      background: #1c2331;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 13px;
+      border: 1px solid #333;
+      overflow: hidden;
+    }
+
+    .participant.spin {
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      50%  { transform: rotate(3deg) scale(1.02); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .assignments-list {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .assign-item {
+      background: #111826;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-left: 3px solid #4caf50;
+      font-size: 14px;
+      opacity: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .assign-item.selected {
+      border-left-color: #ffeb3b;
+      background: #1a2333;
+      box-shadow: 0 0 0 1px #ffeb3b66;
+    }
+
+    .assign-text {
+      flex: 1;
+    }
+
+    .assign-code-label {
+      font-size: 12px;
+      color: #ccc;
+      white-space: nowrap;
+    }
+
+    .assign-code-label strong {
+      color: #ffd54f;
+    }
+  </style>
+</head>
+<body autocomplete="off">
+<div class="container">
+  <h1>Rock Hounding for Begginners - Rock Exchange</h1>
+  <p class="subtitle">
+    Participants: enter your 4-digit code to see who you are sending rocks to. Organizers: unlock the admin panel below.
+  </p>
+
+  <!-- Participant view -->
+  <div class="card">
+    <h2 style="margin-top:0;">1. Participant – Reveal Your Match</h2>
+    <div class="code-row">
+      <label for="codeInput">Your code:</label>
+      <input id="codeInput" type="text" maxlength="8" placeholder="1234"
+             autocomplete="off" inputmode="numeric">
+    </div>
+    <div style="text-align:center;">
+      <button id="revealBtn">✨ Reveal My Match</button>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div id="resultCard" class="result-card" style="display:none;"></div>
+
+    <p class="small-note">
+      If your code doesn’t work, please contact the organizer to confirm your code.
+    </p>
+  </div>
+
+  <!-- Admin section -->
+  <div class="card">
+    <div class="admin-header">
+      <h2>2. Organizer Admin</h2>
+      <button id="toggleAdminBtn" class="btn-secondary" style="margin-top:0;">Hide Admin Panel</button>
+    </div>
+
+    <!-- Locked view -->
+    <div id="adminLocked" style="margin-top:12px; display:block;">
+      <div class="code-row" style="justify-content:flex-start;">
+        <label for="adminCodeInput" style="font-size:13px;">Admin code:</label>
+        <input id="adminCodeInput" type="password" maxlength="16" placeholder="••••"
+               autocomplete="new-password">
+        <button id="adminUnlockBtn">Unlock</button>
+      </div>
+      <div id="adminLockStatus" class="status" style="text-align:left;"></div>
+      <div class="admin-small-note">
+        This area is for the organizer only. Enter the admin code to load participants, create assignments,
+        and export them for the code reveal.
+      </div>
+    </div>
+
+    <!-- Unlocked admin tools -->
+    <div id="adminUnlocked" style="display:none;margin-top:14px;">
+      <h3 style="margin:0 0 6px 0;font-size:15px;">Step 1 – Paste Participants (with codes)</h3>
+      <div class="admin-small-note">
+        One person per line. Include their full address and their chosen code at the end, like this:<br>
+        <code>Adam Schultz 412 17th Avenue Hinton, WV 25951 code: 1111</code>
+      </div>
+      <textarea id="participantsInput"
+        placeholder="Adam Schultz 412 17th Avenue Hinton, WV 25951 code: 1111&#10;Erin Walsh 5 Salem Court Pleasant Valley, NY 12569 code: 4444"></textarea>
+      <button id="createAssignmentsBtn">🎲 Create Assignments</button>
+      <div id="adminStatus" class="status" style="text-align:left;"></div>
+
+      <h3 style="margin-top:18px;font-size:15px;">Step 2 – Participants Overview</h3>
+      <div id="participantsGrid" class="participants-grid"></div>
+
+      <h3 style="margin-top:18px;font-size:15px;">Step 3 – Assignments (codes are read from lines above)</h3>
+      <div class="admin-small-note">
+        Click rows to select/deselect them, then use “Reassign selected senders” if you don’t like certain matches.<br>
+        Each sender’s code comes from the <code>code: ####</code> on their original line.
+      </div>
+
+      <div style="margin-top:8px;">
+        <button id="reassignBtn" class="btn-secondary" disabled>🔁 Reassign selected senders</button>
+        <button id="exportRevealBtn" class="btn-secondary" disabled>📤 Export to Reveal Section</button>
+      </div>
+
+      <div id="assignmentsList" class="assignments-list"></div>
+
+      <div id="exportStatus" class="status" style="text-align:left;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG: set the admin code here =====
+const ADMIN_CODE = "rocks1234";  // <-- change this to whatever secret you want
+// ==========================================
+
+// ---------------- Participant side (code reveal) ----------------
+
+// Mapping: code -> { senderName, recipientLine }
+const codeMap = {};
+
+const codeInput = document.getElementById("codeInput");
+const revealBtn = document.getElementById("revealBtn");
+const statusEl = document.getElementById("status");
+const resultCard = document.getElementById("resultCard");
+
+function revealMatch() {
+  const raw = codeInput.value.trim();
+
+  statusEl.textContent = "";
+  statusEl.className = "status";
+  resultCard.style.display = "none";
+  resultCard.textContent = "";
+
+  if (!raw) {
+    statusEl.textContent = "Please enter your code.";
+    statusEl.classList.add("error");
+    return;
+  }
+
+  if (Object.keys(codeMap).length === 0) {
+    statusEl.textContent = "Assignments are not loaded yet. Please contact the organizer.";
+    statusEl.classList.add("error");
+    return;
+  }
+
+  const info = codeMap[raw];
+  if (!info) {
+    statusEl.textContent = "Code not found. Double-check your code or contact the organizer.";
+    statusEl.classList.add("error");
+    return;
+  }
+
+  statusEl.textContent = "Match found!";
+  statusEl.classList.add("success");
+
+  resultCard.innerHTML =
+    `<div><strong>Hello ${info.senderName}!</strong></div>` +
+    `<div style="margin-top:6px;">For this Rock Exchange, you will be sending your rocks to:</div>` +
+    `<div style="margin-top:6px;padding-left:8px;">${info.recipientLine}</div>` +
+    `<div style="margin-top:10px;font-size:12px;color:#ccc;">` +
+    `Please mail your box on or before Dec. 12. Send Donna Pevey a valid tracking number and your deposit will be refunded.` +
+    `Thank you for being a part of this Exchange!` +
+    `</div>`;
+
+  resultCard.style.display = "block";
+  resultCard.classList.remove("fade-in");
+  void resultCard.offsetWidth;
+  resultCard.classList.add("fade-in");
+}
+
+revealBtn.addEventListener("click", revealMatch);
+codeInput.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") revealMatch();
+});
+
+// ---------------- Admin UI: lock/unlock ----------------
+
+const toggleAdminBtn = document.getElementById("toggleAdminBtn");
+const adminLocked = document.getElementById("adminLocked");
+const adminUnlocked = document.getElementById("adminUnlocked");
+const adminCodeInput = document.getElementById("adminCodeInput");
+const adminUnlockBtn = document.getElementById("adminUnlockBtn");
+const adminLockStatus = document.getElementById("adminLockStatus");
+
+// Show/hide admin panel
+toggleAdminBtn.addEventListener("click", () => {
+  const hidden = adminLocked.style.display === "none" && adminUnlocked.style.display === "none";
+  if (hidden) {
+    adminLocked.style.display = "block";
+    toggleAdminBtn.textContent = "Hide Admin Panel";
+  } else {
+    adminLocked.style.display = "none";
+    adminUnlocked.style.display = "none";
+    toggleAdminBtn.textContent = "Show Admin Panel";
+  }
+});
+
+// Initially show locked panel
+adminLocked.style.display = "block";
+adminUnlocked.style.display = "none";
+toggleAdminBtn.textContent = "Hide Admin Panel";
+
+adminUnlockBtn.addEventListener("click", () => {
+  const entered = adminCodeInput.value.trim();
+  adminLockStatus.textContent = "";
+  adminLockStatus.className = "status";
+
+  if (!entered) {
+    adminLockStatus.textContent = "Please enter the admin code.";
+    adminLockStatus.classList.add("error");
+    return;
+  }
+
+  if (entered !== ADMIN_CODE) {
+    adminLockStatus.textContent = "Incorrect admin code.";
+    adminLockStatus.classList.add("error");
+    return;
+  }
+
+  adminLockStatus.textContent = "Admin unlocked.";
+  adminLockStatus.classList.add("success");
+
+  adminLocked.style.display = "none";
+  adminUnlocked.style.display = "block";
+});
+
+// ---------------- Admin: assignments + codes engine ----------------
+
+let participantsAdmin = null;   // array of { name, state, region, fullLine, code }
+let lastAssignments = null;     // array of { fromIndex, toIndex }
+
+const participantsInput = document.getElementById("participantsInput");
+const createAssignmentsBtn = document.getElementById("createAssignmentsBtn");
+const adminStatus = document.getElementById("adminStatus");
+const participantsGrid = document.getElementById("participantsGrid");
+const assignmentsList = document.getElementById("assignmentsList");
+const reassignBtn = document.getElementById("reassignBtn");
+const exportRevealBtn = document.getElementById("exportRevealBtn");
+const exportStatus = document.getElementById("exportStatus");
+
+// Valid 2-letter US state codes
+const stateSet = new Set([
+  "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID",
+  "IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS",
+  "MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK",
+  "OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV",
+  "WI","WY","DC"
+]);
+
+// Broad regions
+const stateToRegion = {
+  ME:"Northeast", NH:"Northeast", VT:"Northeast", MA:"Northeast",
+  RI:"Northeast", CT:"Northeast", NY:"Northeast", NJ:"Northeast",
+  PA:"Northeast",
+
+  OH:"Midwest", MI:"Midwest", IN:"Midwest", IL:"Midwest",
+  WI:"Midwest", MN:"Midwest", IA:"Midwest", MO:"Midwest",
+  ND:"Midwest", SD:"Midwest", NE:"Midwest", KS:"Midwest",
+
+  DE:"South", MD:"South", DC:"South", VA:"South", WV:"South",
+  NC:"South", SC:"South", GA:"South", FL:"South",
+  KY:"South", TN:"South", AL:"South", MS:"South",
+  AR:"South", LA:"South", OK:"South", TX:"South",
+
+  MT:"Mountain", ID:"Mountain", WY:"Mountain", CO:"Mountain",
+  NM:"Mountain", AZ:"Mountain", UT:"Mountain", NV:"Mountain",
+
+  WA:"West", OR:"West", CA:"West",
+
+  AK:"Alaska", HI:"Hawaii"
+};
+
+// Parse participants from textarea (including codes)
+function parseParticipants(text) {
+  const lines = text.split(/\r?\n/);
+  const arr = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    // Extract "code: XXXX" at the end if present
+    let codeStr = "";
+    let lineNoCode = trimmed;
+    const mCode = trimmed.match(/^(.*)\bcode:\s*([0-9A-Za-z]+)\s*$/i);
+    if (mCode) {
+      lineNoCode = mCode[1].trim();
+      codeStr = mCode[2].trim();
+    }
+
+    // detect state from right
+    let state = "Unknown";
+    const tokens = lineNoCode.split(/[\s,]+/);
+    for (let i = tokens.length - 1; i >= 0; i--) {
+      const up = tokens[i].toUpperCase();
+      if (stateSet.has(up)) {
+        state = up;
+        break;
+      }
+    }
+
+    let region = "Unknown";
+    if (state !== "Unknown") {
+      region = stateToRegion[state] || state;
+    }
+
+    // name is everything before first digit
+    let name = lineNoCode;
+    const m = lineNoCode.match(/^(.*?)(\d|$)/);
+    if (m) {
+      let maybe = m[1].trim().replace(/,+$/, "");
+      if (maybe.length > 0) name = maybe;
+    }
+
+    arr.push({
+      name,
+      state,
+      region,
+      fullLine: lineNoCode, // address without "code: ####"
+      code: codeStr
+    });
+  }
+
+  return arr;
+}
+
+// Shuffle helper
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Generate assignments with optional locks
+// locks: { fromIndex: toIndex }
+function generateAssignmentsWithLocks(participants, locks = {}) {
+  const n = participants.length;
+  if (n < 2) return [];
+
+  let bestReceivers = null;
+  let bestScore = Infinity;
+  const maxTries = 400;
+
+  const isLocked = new Array(n).fill(false);
+  for (const key in locks) {
+    const i = parseInt(key, 10);
+    if (!isNaN(i)) isLocked[i] = true;
+  }
+
+  for (let attempt = 0; attempt < maxTries; attempt++) {
+    const receivers = new Array(n).fill(-1);
+    const usedRecipients = new Array(n).fill(false);
+    let validLocks = true;
+
+    // apply locks
+    for (const key in locks) {
+      const i = parseInt(key, 10);
+      const j = locks[key];
+      if (i === j) {
+        validLocks = false;
+        break;
+      }
+      if (receivers[i] !== -1 && receivers[i] !== j) {
+        validLocks = false;
+        break;
+      }
+      if (usedRecipients[j]) {
+        validLocks = false;
+        break;
+      }
+      receivers[i] = j;
+      usedRecipients[j] = true;
+    }
+
+    if (!validLocks) continue;
+
+    // free sets
+    const freeSenders = [];
+    const freeRecipients = [];
+    for (let i = 0; i < n; i++) {
+      if (receivers[i] === -1) freeSenders.push(i);
+      if (!usedRecipients[i]) freeRecipients.push(i);
+    }
+
+    shuffle(freeRecipients);
+    for (let idx = 0; idx < freeSenders.length; idx++) {
+      const sender = freeSenders[idx];
+      const recip = freeRecipients[idx];
+      receivers[sender] = recip;
+    }
+
+    // fix self-sends for non-locked
+    for (let i = 0; i < n; i++) {
+      if (isLocked[i]) continue;
+      if (receivers[i] === i) {
+        let swapIndex = -1;
+        for (let j = 0; j < n; j++) {
+          if (j === i) continue;
+          if (isLocked[j]) continue;
+          if (receivers[j] === i) continue;
+          if (receivers[j] === j) continue;
+          swapIndex = j;
+          break;
+        }
+        if (swapIndex === -1) {
+          let j = (i + 1) % n;
+          if (!isLocked[j]) {
+            [receivers[i], receivers[j]] = [receivers[j], receivers[i]];
+          }
+        } else {
+          [receivers[i], receivers[swapIndex]] = [receivers[swapIndex], receivers[i]];
+        }
+      }
+    }
+
+    // score
+    let regionConflicts = 0;
+    let twoCycles = 0;
+
+    for (let i = 0; i < n; i++) {
+      const j = receivers[i];
+      const a = participants[i];
+      const b = participants[j];
+      if (a.region !== "Unknown" && b.region !== "Unknown" && a.region === b.region) {
+        regionConflicts++;
+      }
+    }
+
+    for (let i = 0; i < n; i++) {
+      const j = receivers[i];
+      if (j > i && receivers[j] === i) {
+        twoCycles++;
+      }
+    }
+
+    const score = twoCycles * 100 + regionConflicts;
+
+    if (score < bestScore) {
+      bestScore = score;
+      bestReceivers = receivers.slice();
+      if (score === 0) break;
+    }
+  }
+
+  if (!bestReceivers) {
+    bestReceivers = [...Array(n).keys()];
+    shuffle(bestReceivers);
+  }
+
+  // try to break remaining 2-cycles
+  const receivers = bestReceivers;
+  for (let i = 0; i < n; i++) {
+    const j = receivers[i];
+    if (j > i && receivers[j] === i) {
+      if (isLocked[i] || isLocked[j]) continue;
+      let swapped = false;
+      for (let k = 0; k < n; k++) {
+        if (k === i || k === j) continue;
+        if (isLocked[k]) continue;
+
+        const r_i = receivers[i];
+        const r_k = receivers[k];
+
+        if (r_k === i || r_k === k || r_i === k) continue;
+
+        receivers[i] = r_k;
+        receivers[k] = r_i;
+        swapped = true;
+        break;
+      }
+      if (!swapped) {
+        for (let k = 0; k < n; k++) {
+          if (k === i || k === j) continue;
+          if (isLocked[k]) continue;
+
+          const r_j = receivers[j];
+          const r_k = receivers[k];
+
+          if (r_k === j || r_k === k || r_j === k) continue;
+
+          receivers[j] = r_k;
+          receivers[k] = r_j;
+          break;
+        }
+      }
+    }
+  }
+
+  const assignments = [];
+  for (let i = 0; i < n; i++) {
+    assignments.push({ fromIndex: i, toIndex: receivers[i] });
+  }
+  return assignments;
+}
+
+// Render participants grid
+function renderParticipantsGrid(list) {
+  participantsGrid.innerHTML = "";
+  list.forEach(p => {
+    const codeLabel = p.code ? `code: ${p.code}` : "no code";
+    const div = document.createElement("div");
+    div.className = "participant spin";
+    div.innerHTML = `<strong>${p.name}</strong><br><span>${p.state || "??"}</span><br><span style="font-size:11px;color:#bbb;">${codeLabel}</span>`;
+    participantsGrid.appendChild(div);
+  });
+  setTimeout(() => {
+    document.querySelectorAll(".participant").forEach(e => e.classList.remove("spin"));
+  }, 1500);
+}
+
+// Render assignments (codes shown, not editable)
+function renderAssignments() {
+  assignmentsList.innerHTML = "";
+  if (!lastAssignments || !participantsAdmin) return;
+
+  lastAssignments.forEach((a, idx) => {
+    const from = participantsAdmin[a.fromIndex];
+    const to = participantsAdmin[a.toIndex];
+    const senderCode = from.code || "—";
+
+    const row = document.createElement("div");
+    row.className = "assign-item";
+    row.dataset.fromIndex = String(a.fromIndex);
+
+    row.innerHTML = `
+      <div class="assign-text">
+        #${idx + 1} Sender: <strong>${from.name}</strong> (${from.state || "??"})
+        → Send to: <strong>${to.name}</strong> (${to.state || "??"})
+      </div>
+      <div class="assign-code-label">
+        Code: <strong>${senderCode}</strong>
+      </div>
+    `;
+
+    assignmentsList.appendChild(row);
+    setTimeout(() => row.style.opacity = "1", 50 + idx * 30);
+  });
+
+  attachAssignmentHandlers();
+}
+
+// Click handlers for selecting rows
+function attachAssignmentHandlers() {
+  const rows = Array.from(document.querySelectorAll(".assign-item"));
+  rows.forEach(row => {
+    row.addEventListener("click", () => {
+      row.classList.toggle("selected");
+    });
+  });
+}
+
+// Create assignments
+createAssignmentsBtn.addEventListener("click", () => {
+  adminStatus.textContent = "";
+  adminStatus.className = "status";
+  exportStatus.textContent = "";
+  exportStatus.className = "status";
+  assignmentsList.innerHTML = "";
+  participantsGrid.innerHTML = "";
+  participantsAdmin = null;
+  lastAssignments = null;
+  reassignBtn.disabled = true;
+  exportRevealBtn.disabled = true;
+
+  const raw = participantsInput.value;
+  const list = parseParticipants(raw);
+
+  if (list.length < 2) {
+    adminStatus.textContent = "Need at least 2 participants.";
+    adminStatus.classList.add("error");
+    return;
+  }
+
+  participantsAdmin = list;
+  renderParticipantsGrid(list);
+
+  const baseAssignments = generateAssignmentsWithLocks(list, {});
+  lastAssignments = baseAssignments;
+
+  // Info about missing codes
+  const noCodeCount = list.filter(p => !p.code).length;
+  let msg = `Created assignments for ${list.length} participants.`;
+  if (noCodeCount > 0) {
+    msg += ` ${noCodeCount} participant(s) have no code: they will be skipped when exporting to the reveal section.`;
+    adminStatus.classList.add("error");
+  } else {
+    adminStatus.classList.add("success");
+  }
+  adminStatus.textContent = msg;
+
+  reassignBtn.disabled = false;
+  exportRevealBtn.disabled = false;
+
+  renderAssignments();
+});
+
+// Reassign selected senders only
+reassignBtn.addEventListener("click", () => {
+  if (!participantsAdmin || !lastAssignments) return;
+
+  const rows = Array.from(document.querySelectorAll(".assign-item"));
+  const selectedRows = rows.filter(r => r.classList.contains("selected"));
+
+  if (selectedRows.length === 0) {
+    alert("Click on one or more assignments first to select them.");
+    return;
+  }
+
+  const selectedFromIndices = new Set(
+    selectedRows
+      .map(r => parseInt(r.dataset.fromIndex, 10))
+      .filter(i => !isNaN(i))
+  );
+
+  const locks = {};
+  lastAssignments.forEach(a => {
+    if (!selectedFromIndices.has(a.fromIndex)) {
+      locks[a.fromIndex] = a.toIndex;
+    }
+  });
+
+  const baseAssignments = generateAssignmentsWithLocks(participantsAdmin, locks);
+  lastAssignments = baseAssignments;
+
+  adminStatus.textContent = "Reassigned selected senders.";
+  adminStatus.classList.add("success");
+
+  renderAssignments();
+});
+
+// Export to reveal section (fill codeMap)
+exportRevealBtn.addEventListener("click", () => {
+  exportStatus.textContent = "";
+  exportStatus.className = "status";
+
+  if (!participantsAdmin || !lastAssignments) {
+    exportStatus.textContent = "No assignments to export. Create assignments first.";
+    exportStatus.classList.add("error");
+    return;
+  }
+
+  // clear codeMap
+  for (const k in codeMap) {
+    if (Object.prototype.hasOwnProperty.call(codeMap, k)) {
+      delete codeMap[k];
+    }
+  }
+
+  let loaded = 0;
+  let missingCodes = 0;
+
+  lastAssignments.forEach(a => {
+    const from = participantsAdmin[a.fromIndex];
+    const to = participantsAdmin[a.toIndex];
+    const code = (from.code || "").trim();
+
+    if (!code) {
+      missingCodes++;
+      return;
+    }
+
+    codeMap[code] = {
+      senderName: from.name,
+      recipientLine: to.fullLine
+    };
+    loaded++;
+  });
+
+  if (loaded === 0) {
+    exportStatus.textContent = "No codes were provided in the participant lines. Please include 'code: ####' for each sender.";
+    exportStatus.classList.add("error");
+    return;
+  }
+
+  let msg = `Exported ${loaded} assignments to the reveal section.`;
+  if (missingCodes > 0) {
+    msg += ` ${missingCodes} sender(s) had no code and were skipped.`;
+    exportStatus.classList.add("error");
+  } else {
+    exportStatus.classList.add("success");
+  }
+
+  exportStatus.textContent = msg;
+});
+</script>
+</body>
+</html>
